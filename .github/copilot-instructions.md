@@ -1,61 +1,259 @@
-# E-Learn Copilot Instructions
+# E-Learn Platform - Copilot Instructions
 
 ## Project Overview
-E-Learn is a lightweight, client-side e-learning platform for digital printing education. It's a static HTML/CSS/JavaScript site with no backend, build system, or external dependencies beyond embedded YouTube videos.
+
+E-Learn is a **full-featured, client-side e-learning platform** for digital printing education. It's a static HTML/CSS/JavaScript site with no backend or build system, featuring 4 professional courses with multiple lessons each, dynamic routing, progress tracking, bookmarks, and search functionality.
+
+**Key Features:**
+- 4 complete courses with 3+ lessons each
+- Dynamic content loading from `js/data.js`
+- URL-based routing: `lessons.html?course=1`, `lesson.html?course=1&lesson=2`
+- Progress tracking & course completion stats (localStorage)
+- Bookmarking system for lessons
+- Search & category filtering
+- Professional Udemy-style design
+- Fully responsive & accessible
 
 ## Architecture
 
-### Page Structure
-- **index.html**: Landing/home page with course overview and entry point (`goToLessons()` onclick handler)
-- **lessons.html**: Lesson listing page with clickable lesson cards (`openLesson()` onclick handler)
-- **lesson.html**: Individual lesson detail page with embedded video and content
+### Data Structure (`js/data.js`)
 
-**Data Flow**: User clicks course → `goToLessons()` → lessons.html → clicks lesson → `openLesson()` → lesson.html
+All course and lesson data is stored in a centralized `courses` array:
 
-### Navigation Pattern
-All navigation uses `window.location.href` in `js/script.js`. Navigation links are hardcoded in HTML headers, not dynamically generated. Back buttons use conditional links (e.g., `lessons.html` back button links to `index.html`).
+```javascript
+const courses = [
+  {
+    id: 1,
+    title: "Digital Printing Basics",
+    description: "...",
+    instructor: "John Doe",
+    category: "Printing Technology",
+    level: "Beginner",
+    rating: 4.8,
+    students: 2450,
+    image: "📘",
+    duration: "3 hours",
+    lessons: [
+      {
+        id: 1,
+        title: "Introduction to Inkjet Printing",
+        description: "...",
+        videoId: "qz0aGYrrlhU",  // YouTube video ID only
+        duration: "12 min",
+        content: "<h2>HTML content here</h2>..."  // Rich HTML lesson content
+      }
+    ]
+  }
+]
+```
 
-### Styling Convention
-- **Color scheme**: Primary blue (#1e90ff) in headers, light gray (#f4f4f4) background
-- **Card-based UI**: `.course-card` and `.lesson-card` share hover effects (light blue background #eaf3ff)
-- **Layout**: Flexbox for header alignment (`justify-content: space-between`), padding-based spacing
-- **No responsive breakpoints**: Assumes desktop viewing (embed iframes are width: 100%)
+**Helper functions in data.js:**
+- `getCourseById(courseId)` - Get course object
+- `getLessonById(courseId, lessonId)` - Get lesson object
+- `getAllCourses()` - Get all courses
+- `getCategories()` - Get unique category names
 
-## Key Files & Responsibilities
-- `css/style.css`: All styling; centralizes UI patterns (cards, hover states, header)
-- `js/script.js`: Minimal navigation logic; extends as needed for interactivity
-- `index.html`, `lessons.html`, `lesson.html`: Each page is self-contained with full HTML boilerplate
+### Page Flow & Routing
 
-## Common Patterns
+1. **index.html** (Homepage)
+   - Displays all courses as cards with progress bars
+   - Category filtering buttons
+   - Search bar for finding courses
+   - Click course card → `goToCourse(courseId)` → `lessons.html?course=1`
 
-### Adding New Pages
-1. Create new `.html` file with full boilerplate (DOCTYPE, meta charset, CSS link, script link)
-2. Include header with logo link + back button (copy from `lessons.html` structure)
-3. Add navigation function to `script.js` if needed
+2. **lessons.html** (Course Page)
+   - Shows course header (title, instructor, duration, rating)
+   - Lists all lessons as clickable cards with completion badges
+   - Click lesson → `goToLesson(courseId, lessonId)` → `lesson.html?course=1&lesson=2`
 
-### Adding New Lessons
-1. Duplicate lesson card in `lessons.html`: `<div class="lesson-card" onclick="openLesson()">...`
-2. Update lesson title in the card
-3. (Future enhancement: Implement lesson routing or parameterized URLs)
+3. **lesson.html** (Lesson Page)
+   - Embedded YouTube video player
+   - Rich lesson content (HTML with images, tables, lists)
+   - Previous/Next navigation buttons
+   - Progress bar showing course completion
+   - Mark complete button (saves to localStorage)
+   - Bookmark button for saving important lessons
 
-### Styling New Elements
-- Add CSS to `style.css` bottom
-- Reuse existing classes (`.container`, `.back-btn`) rather than creating duplicates
-- Maintain 0.3s transitions for interactive elements (see `.back-btn:hover`)
+### Navigation Functions (js/script.js)
 
-## Development Notes
+All navigation uses URL parameters (not hash routing):
 
-- **No build step**: Direct HTML file serving; all changes are live
-- **No lesson routing**: Currently, all lessons link to the same `lesson.html`. Future versions should implement URL parameters (e.g., `lesson.html?id=1`) or dynamic content loading
-- **Content is static**: Course descriptions, lesson titles, and lesson content are hardcoded in HTML
-- **Video embedding**: Uses iframe with YouTube embed URLs; adjust src for different videos
+```javascript
+goToCourse(courseId)              // → lessons.html?course=1
+goToLesson(courseId, lessonId)    // → lesson.html?course=1&lesson=2
+getUrlParameter(param)            // Extract ?param=value from URL
+```
 
-## Common Tasks
+**Do NOT use:**
+- `window.location.hash`
+- Direct hardcoded links like `href="lessons.html"` (breaks when selecting specific courses)
+- Form submissions
 
-| Task | Location |
-|------|----------|
-| Update course title | `index.html` `<h1>` tag |
-| Change header color | `css/style.css` `.header { background: ... }` |
-| Add navigation | `js/script.js` function, update onclick handlers |
-| Add lesson content | `lesson.html` `<main>` section |
-| Modify card styling | `css/style.css` `.course-card, .lesson-card` |
+## File Structure & Responsibilities
+
+### HTML Files
+- **index.html**: Homepage with course grid, filters, search bar
+- **lessons.html**: Course overview + lesson list (single template, populated via `?course=ID`)
+- **lesson.html**: Individual lesson player (single template, populated via `?course=ID&lesson=ID`)
+
+**Key constraint:** All pages share the same HTML structure across the platform but are populated dynamically via JavaScript.
+
+### JavaScript Files
+- **js/data.js** (400+ lines)
+  - Course/lesson data definitions
+  - Helper functions: `getCourseById()`, `getLessonById()`, `getCategories()`
+  
+- **js/script.js** (350+ lines)
+  - **Homepage:** `initializeHomepage()`, `renderAllCourses()`, `renderCategoryFilters()`, `setupSearchFunctionality()`
+  - **Lessons page:** `initializeLessonsPage()`, `renderLessons()`
+  - **Lesson page:** `initializeLessonPage()`, `setupLessonNavigation()`, `markLessonComplete()`
+  - **Progress tracking:** `getUserCourseProgress()`, `setLessonCompleted()`, `isLessonCompleted()`
+  - **Bookmarks:** `toggleBookmark()`, `isLessonBookmarked()`, `getBookmarkedLessons()`
+  - **Navigation:** `goToCourse()`, `goToLesson()`, `goToNextLesson()`, `goToPreviousLesson()`
+
+### CSS File
+- **css/style.css** (600+ lines)
+  - **Header & navigation** (sticky, gradient blue)
+  - **Hero section** (purple gradient, CTA button)
+  - **Course cards** (grid layout, hover effects, progress bars)
+  - **Lesson page** (video container with responsive aspect ratio, content styling)
+  - **Responsive design** (breakpoint at 768px for mobile)
+  - **Color scheme:** Primary #1e90ff (blue), Secondary #667eea (purple), Backgrounds #f8f9fa (light gray)
+
+## Common Workflows
+
+### Adding a New Course
+
+1. Open `js/data.js`
+2. Add new object to `courses` array with:
+   - Unique `id` (increment from highest existing)
+   - `title`, `description`, `instructor`, `category`, `level`, `rating`, `students`, `image`, `duration`
+   - `lessons` array with lesson objects
+3. Each lesson requires: `id`, `title`, `description`, `videoId` (YouTube only), `duration`, `content` (HTML string)
+
+**Example:**
+```javascript
+{
+  id: 5,
+  title: "Advanced Color Management",
+  instructor: "Maria Lopez",
+  category: "Design & Prepress",
+  lessons: [
+    {
+      id: 1,
+      title: "ICC Profiles and Color Spaces",
+      videoId: "abc123xyz",
+      content: `<h2>Color Management</h2><p>...</p>`
+    }
+  ]
+}
+```
+
+### Adding Lessons to Existing Course
+
+1. Find course in `js/data.js`
+2. Add lesson object to its `lessons` array
+3. Increment `id` from highest existing lesson in that course
+4. YouTube `videoId` is the part after `?v=` in the URL
+
+### Modifying Styling
+
+- **Header color:** `css/style.css` → `.header { background: linear-gradient(...) }`
+- **Card hover effects:** `.course-card:hover`, `.lesson-card:hover`
+- **Progress bar color:** `.progress-fill { background: linear-gradient(...) }`
+- **Responsive breakpoints:** Search `@media (max-width: 768px)` section
+
+### Video Embedding
+
+YouTube videos are embedded as iframes. To change a lesson's video:
+
+1. Go to YouTube video → copy video ID from URL (e.g., `youtube.com/watch?v=**qz0aGYrrlhU**`)
+2. In `js/data.js`, update lesson's `videoId` field
+3. HTML generates: `<iframe src="https://www.youtube.com/embed/qz0aGYrrlhU">`
+
+**Do NOT include the full URL** — only the video ID.
+
+### Adding Lesson Content
+
+Lesson content is HTML stored as a string. Supports rich formatting:
+
+```javascript
+content: `
+  <h2>Lesson Title</h2>
+  <p>Introduction paragraph</p>
+  <h3>Key Concepts:</h3>
+  <ul>
+    <li>Point 1</li>
+    <li>Point 2</li>
+  </ul>
+  <h3>Advanced Topics</h3>
+  <table>
+    <tr><th>Header</th></tr>
+    <tr><td>Data</td></tr>
+  </table>
+`
+```
+
+CSS automatically styles: `h2`, `h3`, `ul`, `ol`, `li`, `p`, `table` elements.
+
+## Data Persistence (LocalStorage)
+
+### Progress Tracking
+
+Stored as: `course_[ID]_progress` → `{ courseId: 1, completedLessons: 2, completed: [1, 2] }`
+
+**Functions:**
+- `setLessonCompleted(courseId, lessonId)` - Mark lesson complete
+- `isLessonCompleted(courseId, lessonId)` - Check if complete
+- `getUserCourseProgress(courseId)` - Get completion count
+
+### Bookmarks
+
+Stored as: `bookmarkedLessons` → `[{ courseId: 1, lessonId: 2 }, ...]`
+
+**Functions:**
+- `toggleBookmark()` - Add/remove bookmark
+- `isLessonBookmarked(courseId, lessonId)` - Check if bookmarked
+- `getBookmarkedLessons()` - Get all bookmarks
+
+## Code Style & Comments
+
+- **Comprehensive comments** for all functions explaining parameters and return values
+- **Utility functions** prefixed with `get` (getters), `set` (setters), `is` (booleans)
+- **Page initialization** via `DOMContentLoaded` event listeners
+- **HTML injection** for dynamic content (no build step, no frameworks)
+
+## Frequently Modified Files
+
+| Task | File | Function |
+|------|------|----------|
+| Add course | `js/data.js` | Append to `courses` array |
+| Add lesson | `js/data.js` | Append to course's `lessons` array |
+| Update course title | `js/data.js` | Modify `course.title` |
+| Change header color | `css/style.css` | `.header { background: ... }` |
+| Add search feature | `js/script.js` | Extend `setupSearchFunctionality()` |
+| Modify card styling | `css/style.css` | `.course-card`, `.lesson-card` |
+| Update progress bar | `js/script.js` | `updateLessonProgress()` |
+
+## No Build System
+
+- All changes are **live** on refresh
+- No transpilation, bundling, or minification
+- No external dependencies except embedded YouTube
+- Compatible with any static file server
+
+## Browser Compatibility
+
+- Modern browsers (Chrome, Firefox, Safari, Edge)
+- Responsive design optimized for desktop (mobile breakpoint at 768px)
+- Uses ES6 syntax (modern JavaScript)
+
+## Future Enhancements (Optional)
+
+1. **User Authentication** - Login system with cloud-synced progress
+2. **Certificates** - Generate completion certificates
+3. **Discussion Forum** - Lesson-specific Q&A threads
+4. **Downloadable Resources** - PDFs, code files per lesson
+5. **Quizzes** - Knowledge checks with scoring
+6. **Analytics Dashboard** - Admin view of course performance
+

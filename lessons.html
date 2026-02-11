@@ -2,37 +2,57 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Lessons</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Course Lessons - E-Learn</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
+  <!-- Header Navigation -->
   <header class="header">
     <div class="header-content">
       <a href="index.html" class="logo-link">
         <div class="logo">📘 E-Learn</div>
       </a>
-      <a href="index.html" class="back-btn">← Back</a>
+      <a href="index.html" class="back-btn">← Back to Courses</a>
     </div>
   </header>
 
+  <!-- Main Content -->
   <main class="container">
-    <h1>Lessons</h1>
-
-    <div class="lesson-card" onclick="openLesson()">
-      <h3>Lesson 1: Introduction to Inkjet Printing</h3>
+    
+    <!-- Course Header -->
+    <div class="course-header">
+      <h1 id="courseTitle">Course Title</h1>
+      <div class="course-meta">
+        <span id="courseInstructor" class="instructor">Instructor: </span>
+        <span id="courseDuration" class="duration">Duration: </span>
+        <span id="courseLevel" class="level">Level: </span>
+        <span id="courseRating" class="rating">Rating: ★★★★★</span>
+      </div>
+      <p id="courseDescription" class="course-description">Course description</p>
     </div>
 
-    <div class="lesson-card" onclick="openLesson()">
-      <h3>Lesson 2: Inkjet Printer Types</h3>
-    </div>
-
-    <div class="lesson-card" onclick="openLesson()">
-      <h3>Lesson 3: Inkjet Color Technology</h3>
-    </div>
+    <!-- Lessons List -->
+    <section class="lessons-section">
+      <h2>Course Lessons</h2>
+      <div class="lessons-list" id="lessonsList">
+        <!-- Dynamically populated from data.js -->
+      </div>
+    </section>
 
   </main>
 
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy; 2026 E-Learn Platform. Professional Digital Printing Education.</p>
+  </footer>
+
+  <script src="js/data.js"></script>
   <script src="js/script.js"></script>
+  <script>
+    // Initialize lessons page
+    document.addEventListener('DOMContentLoaded', initializeLessonsPage);
+  </script>
 </body>
 </html>

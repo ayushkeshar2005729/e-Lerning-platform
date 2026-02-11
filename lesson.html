@@ -2,42 +2,83 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Lesson</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson - E-Learn</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
+  <!-- Header Navigation -->
   <header class="header">
     <div class="header-content">
       <a href="index.html" class="logo-link">
         <div class="logo">📘 E-Learn</div>
       </a>
-      <a href="lessons.html" class="back-btn">← Back</a>
+      <div class="header-actions">
+        <button class="bookmark-btn" id="bookmarkBtn" onclick="toggleBookmark()">🔖 Bookmark</button>
+        <a href="" id="backBtn" class="back-btn">← Back</a>
+      </div>
     </div>
   </header>
 
-  <main class="container">
-    <h1>Introduction to Inkjet Printing</h1>
-
-    <!-- Embedded Video -->
-    <div class="video">
-      <iframe width="100%" height="315"
-        src="https://www.youtube.com/embed/qz0aGYrrlhU"
-        frameborder="0"
-        allowfullscreen>
-      </iframe>
+  <!-- Main Content -->
+  <main class="container lesson-container">
+    
+    <!-- Lesson Header -->
+    <div class="lesson-header">
+      <h1 id="lessonTitle">Lesson Title</h1>
+      <div class="lesson-meta">
+        <span id="lessonDuration" class="duration">Duration: 12 min</span>
+        <span id="lessonNumber" class="lesson-number">Lesson 1</span>
+        <button id="completeBtn" class="complete-btn" onclick="markLessonComplete()">✓ Mark Complete</button>
+      </div>
     </div>
 
-    <!-- Blog Content -->
-    <p>
-      Inkjet printing is a digital printing technology that uses tiny droplets of ink
-      to create images on various media. It is widely used for both home and commercial printing.
-    </p>
+    <!-- Video Section -->
+    <div class="video-section">
+      <div class="video-container">
+        <iframe 
+          id="lessonVideo" 
+          width="100%" 
+          height="450"
+          src="" 
+          frameborder="0"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
 
-    <p>
-      In this lesson, you learned what inkjet printing is and why it is important.
-    </p>
+    <!-- Content Section -->
+    <div class="content-section">
+      <div id="lessonContent" class="lesson-content">
+        <!-- Dynamically populated with HTML content -->
+      </div>
+    </div>
+
+    <!-- Navigation Footer -->
+    <div class="lesson-navigation">
+      <button id="prevBtn" class="nav-btn" onclick="goToPreviousLesson()">← Previous Lesson</button>
+      <div class="progress-info">
+        <span id="progressText">Lesson 1 of 3</span>
+        <div class="progress-bar">
+          <div id="progressFill" class="progress-fill"></div>
+        </div>
+      </div>
+      <button id="nextBtn" class="nav-btn" onclick="goToNextLesson()">Next Lesson →</button>
+    </div>
+
   </main>
 
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy; 2026 E-Learn Platform. Professional Digital Printing Education.</p>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/script.js"></script>
+  <script>
+    // Initialize lesson page
+    document.addEventListener('DOMContentLoaded', initializeLessonPage);
+  </script>
 </body>
 </html>

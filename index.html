@@ -2,33 +2,79 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>E-Learn</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Learn - Professional Digital Printing Education</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-  <!-- Header -->
+  <!-- Header Navigation -->
   <header class="header">
-    <div class="logo">
-      📘 E-Learn
+    <div class="header-content">
+      <div class="logo">📘 E-Learn</div>
+      <div class="header-actions">
+        <input type="text" id="searchInput" class="search-bar" placeholder="Search courses...">
+        <span class="user-icon">👤</span>
+      </div>
     </div>
   </header>
 
-  <!-- Main Section -->
-  <main class="container">
-    <h1>Learn Digital Printing</h1>
-    <p>
-      This course will teach you about inkjet, laser, and offset printing techniques.
-      Perfect for beginners.
-    </p>
-
-    <!-- Course Card -->
-    <div class="course-card" onclick="goToLessons()">
-      <h2>Digital Printing Basics</h2>
-      <p>10 Lessons • Beginner Friendly</p>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Master Digital Printing Technology</h1>
+      <p>Learn professional printing techniques from industry experts. Start your journey today!</p>
+      <button class="cta-button" onclick="scrollToCourses()">Explore Courses</button>
     </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="container">
+    
+    <!-- Categories Filter -->
+    <div class="filter-section">
+      <h2>Filter by Category</h2>
+      <div class="category-filters" id="categoryFilters">
+        <!-- Dynamically populated -->
+      </div>
+    </div>
+
+    <!-- Courses Grid -->
+    <section class="courses-section">
+      <h2>Featured Courses</h2>
+      <div class="courses-grid" id="coursesGrid">
+        <!-- Dynamically populated from data.js -->
+      </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+      <div class="stat">
+        <h3 id="totalCourses">0</h3>
+        <p>Courses</p>
+      </div>
+      <div class="stat">
+        <h3>10,000+</h3>
+        <p>Active Students</p>
+      </div>
+      <div class="stat">
+        <h3>95%</h3>
+        <p>Satisfaction Rate</p>
+      </div>
+    </section>
+
   </main>
 
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy; 2026 E-Learn Platform. Professional Digital Printing Education.</p>
+  </footer>
+
+  <script src="js/data.js"></script>
   <script src="js/script.js"></script>
+  <script>
+    // Initialize homepage
+    document.addEventListener('DOMContentLoaded', initializeHomepage);
+  </script>
 </body>
 </html>
